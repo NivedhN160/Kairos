@@ -109,7 +109,7 @@ class OnlineEventClusterer:
                 latest_article_title=title,
                 timestamp=now
             )
-            await stream_client.publish_live_delta("event.updated", delta.model_dump())
+            await stream_client.publish_live_delta("event.updated", delta.model_dump(mode="json"))
 
             logger.info(f"Article '{title[:40]}...' attached to event '{event.title[:40]}' (score={best_score:.3f})")
             return event, False
@@ -151,7 +151,7 @@ class OnlineEventClusterer:
                 latest_article_title=title,
                 timestamp=now
             )
-            await stream_client.publish_live_delta("event.updated", delta.model_dump())
+            await stream_client.publish_live_delta("event.updated", delta.model_dump(mode="json"))
 
             logger.info(f"Created new event '{title[:45]}...' (id={new_id})")
             return new_event, True

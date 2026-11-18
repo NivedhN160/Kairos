@@ -20,7 +20,7 @@ class InMemoryStreamBroker:
     async def xadd(self, stream: str, data: Dict[str, Any]) -> str:
         async with self._lock:
             msg_id = f"{int(asyncio.get_event_loop().time() * 1000)}-{len(self.streams[stream])}"
-            serialized = {k: json.dumps(v) if isinstance(v, (dict, list)) else str(v) for k, v in data.items()}
+            serialized = {k: json.dumps(v, default=str) if isinstance(v, (dict, list)) else str(v) for k, v in data.items()}
             self.streams[stream].append((msg_id, serialized))
             return msg_id
 
@@ -95,8 +95,8 @@ class StreamClient:
         """Publishes an event to a stream."""
         if self.real_client:
             try:
-                # Convert complex values to JSON strings
-                flattened = {k: json.dumps(v) if isinstance(v, (dict, list)) else str(v) for k, v in payload.items()}
+                # Convert complex values to JSON strings with safe default=str
+                flattened = {k: json.dumps(v, default=str) if isinstance(v, (dict, list)) else str(v) for k, v in payload.items()}
                 return await self.real_client.xadd(stream_name, flattened)
             except Exception as e:
                 logger.error(f"Redis xadd error: {e}")
@@ -104,7 +104,7 @@ class StreamClient:
 
     async def publish_live_delta(self, channel: str, message: Dict[str, Any]):
         """Publishes live updates for SSE subscribers."""
-        serialized = json.dumps(message)
+        serialized = json.dumps(message, default=str)
         if self.real_client:
             try:
                 await self.real_client.publish(channel, serialized)

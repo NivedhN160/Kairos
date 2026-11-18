@@ -53,12 +53,12 @@ app = FastAPI(
 app.include_router(events_router)
 app.include_router(system_router)
 
-@app.get("/", response_class=HTMLResponse)
+@app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def live_feed_page(request: Request):
     """Renders the main live event stream feed."""
     return FileResponse(TEMPLATES_DIR / "index.html", media_type="text/html")
 
-@app.get("/system", response_class=HTMLResponse)
+@app.api_route("/system", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def system_observability_page(request: Request):
     """Renders the system health and stage latency flex page."""
     return FileResponse(TEMPLATES_DIR / "system.html", media_type="text/html")
@@ -76,7 +76,7 @@ async def sse_live_endpoint():
         }
     )
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 async def health_check():
     """Health check endpoint for Render / load balancers."""
     return {

@@ -82,7 +82,7 @@ class PipelineRunner:
             new_items_count += 1
 
             # Emit to Stream S1
-            await stream_client.emit_stream("s1.raw", raw_item.model_dump())
+            await stream_client.emit_stream("s1.raw", raw_item.model_dump(mode="json"))
 
             # S2: Normalizer
             with TraceContext("normalize", raw_item.trace_id):
@@ -103,7 +103,7 @@ class PipelineRunner:
                     trace_id=raw_item.trace_id
                 )
 
-            await stream_client.emit_stream("s2.normalized", norm_article.model_dump())
+            await stream_client.emit_stream("s2.normalized", norm_article.model_dump(mode="json"))
 
             # S3: Deduplication (L1 Exact + L2 SimHash LSH)
             with TraceContext("dedup", raw_item.trace_id):
@@ -119,7 +119,7 @@ class PipelineRunner:
                 norm_article.canonical_article_id = canonical_id
                 continue
 
-            await stream_client.emit_stream("s3.unique", norm_article.model_dump())
+            await stream_client.emit_stream("s3.unique", norm_article.model_dump(mode="json"))
 
             # S6: Online Event Clustering
             with TraceContext("cluster", raw_item.trace_id):
