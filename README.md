@@ -214,6 +214,26 @@ Navigate to `http://localhost:8000` to view the live event stream, or `http://lo
 
 ---
 
+## ☁️ Deploying on Render ($0 Free Tier)
+
+Kairos is architected to deploy directly onto Render as a **single Web Service** using native Python (no Docker):
+
+1. **Connect Repository:** Link your GitHub repo to [Render](https://render.com/).
+2. **Create Web Service:**
+   - **Environment:** `Python 3`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `uvicorn api.main:app --host 0.0.0.0 --port $PORT`
+   - **Plan:** `Free`
+   - **Health Check Path:** `/health`
+3. **Environment Variables:**
+   - `RUN_EMBEDDED_WORKERS`: `true` *(Runs background crawler & clustering loops inside the web process, saving money on separate background workers)*
+   - `DATABASE_URL`: *(Optional)* Your [Neon](https://neon.tech/) connection string (`postgresql+asyncpg://...`)
+   - `REDIS_URL`: *(Optional)* Your [Upstash](https://upstash.com/) connection string (`rediss://...`)
+   *(If omitted, Kairos automatically runs with its built-in in-memory broker and SQLite)*
+4. **Blueprint Support:** You can also deploy via `render.yaml` by choosing **New > Blueprint** in Render!
+
+---
+
 ## 🗺️ Build Roadmap
 
 - [x] **P1 Skeleton:** Local/Cloud DB setup (PostgreSQL + pgvector, Redis), process runner (`run_pipeline.py`), source registry, async fetcher, immutable raw log.

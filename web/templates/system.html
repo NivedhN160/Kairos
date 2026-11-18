@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>KAIROS | System Observability & Telemetry</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            darkbg: '#0B0F17',
+            darkcard: '#121824',
+            darkborder: '#1E293B'
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-[#0B0F17] text-slate-100 min-h-screen flex flex-col font-sans antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-[#1E293B] bg-[#0E1420]/90 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <a href="/" class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500 flex items-center justify-center font-bold text-emerald-400">
+          ⚡
+        </a>
+        <div>
+          <span class="font-extrabold text-xl tracking-tight text-white">KAIROS</span>
+          <span class="ml-2 px-2 py-0.5 text-xs font-medium rounded bg-purple-950/80 border border-purple-700/50 text-purple-300">Pipeline Observability</span>
+        </div>
+      </div>
+
+      <nav class="flex items-center space-x-6 text-sm font-medium">
+        <a href="/" class="text-slate-400 hover:text-slate-200 transition">Live Feed</a>
+        <a href="/system" class="text-emerald-400 border-b-2 border-emerald-400 py-4 font-semibold">System Telemetry</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Observability Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
+    
+    <!-- Top KPI Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-[#121824] border border-slate-800 rounded-xl p-4">
+        <span class="text-xs text-slate-400">Total Registered Feeds</span>
+        <div id="metric-total-sources" class="text-2xl font-bold text-white mt-1">--</div>
+      </div>
+      <div class="bg-[#121824] border border-slate-800 rounded-xl p-4">
+        <span class="text-xs text-slate-400">Active Events Clustered</span>
+        <div id="metric-active-events" class="text-2xl font-bold text-emerald-400 mt-1">--</div>
+      </div>
+      <div class="bg-[#121824] border border-slate-800 rounded-xl p-4">
+        <span class="text-xs text-slate-400">Healthy Feed Sources</span>
+        <div id="metric-healthy-sources" class="text-2xl font-bold text-blue-400 mt-1">--</div>
+      </div>
+      <div class="bg-[#121824] border border-slate-800 rounded-xl p-4">
+        <span class="text-xs text-slate-400">Circuits Open / Degraded</span>
+        <div id="metric-circuit-open" class="text-2xl font-bold text-amber-400 mt-1">--</div>
+      </div>
+    </div>
+
+    <!-- Pipeline Waterfall & Latency Table -->
+    <section class="bg-[#121824] border border-slate-800 rounded-xl p-6">
+      <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+        <div>
+          <h2 class="text-lg font-bold text-white">Stage Latency Waterfall (Target p95 &lt; 5.0s)</h2>
+          <p class="text-xs text-slate-400">Microsecond-precision execution timings recorded per article lifecycle.</p>
+        </div>
+        <span class="text-xs px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700">Auto-updating (5s)</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead class="border-b border-slate-800 text-slate-400 uppercase font-semibold">
+            <tr>
+              <th class="py-2.5 px-3">Pipeline Stage</th>
+              <th class="py-2.5 px-3">Items Processed</th>
+              <th class="py-2.5 px-3">p50 Latency</th>
+              <th class="py-2.5 px-3">p95 Latency</th>
+              <th class="py-2.5 px-3">Average Latency</th>
+              <th class="py-2.5 px-3">Errors / Drops</th>
+              <th class="py-2.5 px-3">Last Active</th>
+            </tr>
+          </thead>
+          <tbody id="stages-table-body" class="divide-y divide-slate-800/60 text-slate-200">
+            <tr>
+              <td colspan="7" class="py-4 text-center text-slate-500">Loading stage metrics...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Source Health Matrix (Dot Grid) -->
+    <section class="bg-[#121824] border border-slate-800 rounded-xl p-6">
+      <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
+        <div>
+          <h2 class="text-lg font-bold text-white">Source Ingestion Health Grid</h2>
+          <p class="text-xs text-slate-400">Real-time status of each news source and adaptive crawler state.</p>
+        </div>
+        <div class="flex items-center space-x-4 text-xs">
+          <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><span class="text-slate-400">Healthy</span></span>
+          <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span class="text-slate-400">Degraded</span></span>
+          <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span><span class="text-slate-400">Circuit Open</span></span>
+        </div>
+      </div>
+
+      <div id="sources-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3 pt-2">
+        <!-- Rendered via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="border-t border-[#1E293B] bg-[#0A0E17] py-4 text-center text-xs text-slate-500">
+    Kairos System Telemetry &bull; Pipeline v1.0.0
+  </footer>
+
+  <script>
+    async function refreshTelemetry() {
+      try {
+        const [metricRes, sourceRes] = await Promise.all([
+          fetch('/api/system/metrics'),
+          fetch('/api/system/sources')
+        ]);
+        const metrics = await metricRes.json();
+        const sources = await sourceRes.json();
+
+        // Update top KPIs
+        document.getElementById('metric-total-sources').textContent = metrics.sources_summary.total;
+        document.getElementById('metric-active-events').textContent = metrics.events_summary.total_active_events;
+        document.getElementById('metric-healthy-sources').textContent = metrics.sources_summary.healthy;
+        document.getElementById('metric-circuit-open').textContent = metrics.sources_summary.circuit_open + metrics.sources_summary.degraded;
+
+        // Render Stages Table
+        const tbody = document.getElementById('stages-table-body');
+        tbody.innerHTML = '';
+        const stageNames = Object.keys(metrics.stages);
+        if (stageNames.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="7" class="py-4 text-center text-slate-500">Collecting first execution metrics...</td></tr>`;
+        } else {
+          stageNames.forEach(st => {
+            const data = metrics.stages[st];
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+              <td class="py-2.5 px-3 font-semibold text-emerald-400">${st}</td>
+              <td class="py-2.5 px-3">${data.total_processed}</td>
+              <td class="py-2.5 px-3">${data.p50_ms} ms</td>
+              <td class="py-2.5 px-3 font-medium ${data.p95_ms > 2000 ? 'text-amber-400' : 'text-slate-200'}">${data.p95_ms} ms</td>
+              <td class="py-2.5 px-3">${data.avg_ms} ms</td>
+              <td class="py-2.5 px-3 ${data.errors > 0 ? 'text-rose-400 font-bold' : 'text-slate-400'}">${data.errors}</td>
+              <td class="py-2.5 px-3 text-slate-400">${data.last_active_seconds_ago}s ago</td>
+            `;
+            tbody.appendChild(tr);
+          });
+        }
+
+        // Render Sources Grid
+        const grid = document.getElementById('sources-grid');
+        grid.innerHTML = '';
+        sources.forEach(src => {
+          let statusColor = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40';
+          let dotColor = 'bg-emerald-400';
+          if (src.status === 'degraded') {
+            statusColor = 'bg-amber-500/20 text-amber-400 border-amber-500/40';
+            dotColor = 'bg-amber-400';
+          } else if (src.status === 'circuit_open') {
+            statusColor = 'bg-rose-500/20 text-rose-400 border-rose-500/40';
+            dotColor = 'bg-rose-400';
+          }
+
+          const card = document.createElement('div');
+          card.className = `p-3 rounded-lg border bg-slate-900/60 ${statusColor} flex flex-col justify-between`;
+          card.innerHTML = `
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="w-2 h-2 rounded-full ${dotColor}"></span>
+                <span class="text-[10px] uppercase font-bold text-slate-400">T${src.tier}</span>
+              </div>
+              <h4 class="font-bold text-xs text-white truncate" title="${src.name}">${src.name}</h4>
+              <span class="text-[10px] text-slate-400">${src.category}</span>
+            </div>
+            <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] text-slate-400">
+              Poll: ${src.poll_interval_s}s
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+      } catch (err) {
+        console.error('Failed to update telemetry:', err);
+      }
+    }
+
+    refreshTelemetry();
+    setInterval(refreshTelemetry, 5000);
+  </script>
+</body>
+</html>
