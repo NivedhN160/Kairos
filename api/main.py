@@ -1,9 +1,9 @@
 import asyncio
 import logging
+from pathlib import Path
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, StreamingResponse
-from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse
 
 from core.config import settings
 from core.db import init_db
@@ -14,7 +14,7 @@ from api.routes_system import router as system_router
 from api.sse import event_generator
 
 logger = logging.getLogger("kairos.api")
-templates = Jinja2Templates(directory="web/templates")
+TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "web" / "templates"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -56,12 +56,12 @@ app.include_router(system_router)
 @app.get("/", response_class=HTMLResponse)
 async def live_feed_page(request: Request):
     """Renders the main live event stream feed."""
-    return templates.TemplateResponse("index.html", {"request": request})
+    return FileResponse(TEMPLATES_DIR / "index.html", media_type="text/html")
 
 @app.get("/system", response_class=HTMLResponse)
 async def system_observability_page(request: Request):
     """Renders the system health and stage latency flex page."""
-    return templates.TemplateResponse("system.html", {"request": request})
+    return FileResponse(TEMPLATES_DIR / "system.html", media_type="text/html")
 
 @app.get("/live")
 async def sse_live_endpoint():

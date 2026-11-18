@@ -1,4 +1,4 @@
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from core.models import Source
 
 DEFAULT_SOURCES: List[Dict[str, Any]] = [
