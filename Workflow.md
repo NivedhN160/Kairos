@@ -445,7 +445,7 @@ kairos/
 
 ## 12. FIRST SOURCES (All Free)
 
-BBC World, Al Jazeera, The Hindu, Indian Express, NDTV, Hindustan Times, Times of India, Reuters-via-Google-News RSS, Guardian, NPR, HN front page, r/worldnews + r/technology RSS, arXiv cs.AI/cs.LG, Wikipedia Current Events portal, GDELT 2.0 (15-min updates + backfill), GitHub trending, company newsrooms, government PIB/RBI/SEBI feeds.
+BBC World, Al Jazeera, The Hindu, Indian Express, NDTV, Hindustan Times, Times of India, Reuters-via-Google-News RSS, Guardian, NPR, HN front page, Compile Artisan (compileartisan.dev), r/worldnews + r/technology RSS, arXiv cs.AI/cs.LG, Wikipedia Current Events portal, GDELT 2.0 (15-min updates + backfill), GitHub trending, company newsrooms, government PIB/RBI/SEBI feeds.
 
 **Expansion plan:** Grow to 200+ sources categorized by:
 - World

@@ -156,6 +156,15 @@ DEFAULT_SOURCES: List[Dict[str, Any]] = [
 
     # --- Community & Curated ---
     {
+        "id": "compile_artisan",
+        "name": "Compile Artisan",
+        "url": "https://compileartisan.dev/rss.xml",
+        "category": "Mentor's Corner",
+        "tier": 1,
+        "reliability": 1.0,
+        "poll_interval_s": 45,
+    },
+    {
         "id": "reddit_worldnews",
         "name": "Reddit World News",
         "url": "https://www.reddit.com/r/worldnews/.rss",
