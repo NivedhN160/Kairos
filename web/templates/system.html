@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KAIROS | System Observability & Telemetry</title>
+  <title>KAIROS &bull; System Observability & Telemetry</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -11,103 +12,156 @@
       theme: {
         extend: {
           colors: {
-            darkbg: '#0B0F17',
-            darkcard: '#121824',
-            darkborder: '#1E293B'
+            surface: {
+              900: '#0C1322',
+              950: '#070B14'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Inter"', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
           }
         }
       }
     }
   </script>
+  <style>
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.4; }
+      100% { transform: scale(0.95); opacity: 1; }
+    }
+    .pulse-live { animation: pulse-ring 2.4s infinite cubic-bezier(0.4, 0, 0.6, 1); }
+  </style>
 </head>
-<body class="bg-[#0B0F17] text-slate-100 min-h-screen flex flex-col font-sans antialiased">
+<body class="bg-[#070B14] text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-emerald-500/30 selection:text-emerald-200">
 
   <!-- Header -->
-  <header class="border-b border-[#1E293B] bg-[#0E1420]/90 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <a href="/" class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500 flex items-center justify-center font-bold text-emerald-400">
-          ⚡
-        </a>
-        <div>
-          <span class="font-extrabold text-xl tracking-tight text-white">KAIROS</span>
-          <span class="ml-2 px-2 py-0.5 text-xs font-medium rounded bg-purple-950/80 border border-purple-700/50 text-purple-300">Pipeline Observability</span>
-        </div>
-      </div>
+  <header class="border-b border-slate-800/80 bg-[#0C1322]/90 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group">
+        <svg class="w-8 h-8 transition-transform group-hover:scale-105" viewBox="0 0 48 48" fill="none">
+          <defs>
+            <linearGradient id="sys-logo-g1" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#10B981" />
+              <stop offset="50%" stop-color="#06B6D4" />
+              <stop offset="100%" stop-color="#3B82F6" />
+            </linearGradient>
+            <linearGradient id="sys-logo-g2" x1="12" y1="8" x2="36" y2="40" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#34D399" />
+              <stop offset="100%" stop-color="#0EA5E9" />
+            </linearGradient>
+          </defs>
+          <rect width="48" height="48" rx="10" fill="#0C1322" stroke="#1E293B" stroke-width="1.5" />
+          <path d="M14 11V37" stroke="url(#sys-logo-g1)" stroke-width="4.5" stroke-linecap="round" />
+          <path d="M34 13L18 24" stroke="url(#sys-logo-g2)" stroke-width="4" stroke-linecap="round" />
+          <path d="M21 21.5L34 35" stroke="url(#sys-logo-g1)" stroke-width="4" stroke-linecap="round" />
+          <circle cx="21" cy="24" r="2.5" fill="#FFFFFF" />
+        </svg>
 
-      <nav class="flex items-center space-x-6 text-sm font-medium">
-        <a href="/" class="text-slate-400 hover:text-slate-200 transition">Live Feed</a>
-        <a href="/system" class="text-emerald-400 border-b-2 border-emerald-400 py-4 font-semibold">System Telemetry</a>
+        <div class="flex flex-col">
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold text-base tracking-wider text-white">KAIROS</span>
+            <span class="text-[9px] font-mono tracking-widest uppercase px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/30 text-blue-400">TELEMETRY</span>
+          </div>
+          <span class="text-[10px] font-mono text-slate-400 tracking-tight hidden sm:block">SYSTEM OBSERVABILITY CONSOLE</span>
+        </div>
+      </a>
+
+      <!-- Navigation -->
+      <nav class="flex items-center space-x-6 text-xs font-medium">
+        <a href="/" class="text-slate-400 hover:text-slate-200 transition py-5 flex items-center space-x-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+          </svg>
+          <span>Live Feed</span>
+        </a>
+        <a href="/system" class="text-emerald-400 border-b-2 border-emerald-400 py-5 font-semibold flex items-center space-x-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          <span>System Telemetry</span>
+        </a>
       </nav>
+
     </div>
   </header>
 
   <!-- Observability Content -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-8">
     
-    <!-- Top KPI Cards -->
+    <!-- Top Telemetry KPI Cards -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div class="bg-[#121824] border border-slate-800 rounded-xl p-4">
-        <span class="text-xs text-slate-400">Total Registered Feeds</span>
-        <div id="metric-total-sources" class="text-2xl font-bold text-white mt-1">--</div>
+      <div class="bg-[#0C1322] border border-slate-800/80 rounded-xl p-4">
+        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Registered Sources</span>
+        <div id="metric-total-sources" class="text-2xl font-mono font-bold text-white mt-1">--</div>
+        <div class="text-[10px] font-mono text-slate-500 mt-1">Multi-tier adaptive pollers</div>
       </div>
-      <div class="bg-[#121824] border border-slate-800 rounded-xl p-4">
-        <span class="text-xs text-slate-400">Active Events Clustered</span>
-        <div id="metric-active-events" class="text-2xl font-bold text-emerald-400 mt-1">--</div>
+
+      <div class="bg-[#0C1322] border border-slate-800/80 rounded-xl p-4">
+        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Active Storylines</span>
+        <div id="metric-active-events" class="text-2xl font-mono font-bold text-emerald-400 mt-1">--</div>
+        <div class="text-[10px] font-mono text-slate-500 mt-1">Incremental ANN clusters</div>
       </div>
-      <div class="bg-[#121824] border border-slate-800 rounded-xl p-4">
-        <span class="text-xs text-slate-400">Healthy Feed Sources</span>
-        <div id="metric-healthy-sources" class="text-2xl font-bold text-blue-400 mt-1">--</div>
+
+      <div class="bg-[#0C1322] border border-slate-800/80 rounded-xl p-4">
+        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Healthy Ingestion Feeds</span>
+        <div id="metric-healthy-sources" class="text-2xl font-mono font-bold text-blue-400 mt-1">--</div>
+        <div class="text-[10px] font-mono text-slate-500 mt-1">Circuit breakers closed</div>
       </div>
-      <div class="bg-[#121824] border border-slate-800 rounded-xl p-4">
-        <span class="text-xs text-slate-400">Circuits Open / Degraded</span>
-        <div id="metric-circuit-open" class="text-2xl font-bold text-amber-400 mt-1">--</div>
+
+      <div class="bg-[#0C1322] border border-slate-800/80 rounded-xl p-4">
+        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Circuits Open / Degraded</span>
+        <div id="metric-circuit-open" class="text-2xl font-mono font-bold text-amber-400 mt-1">--</div>
+        <div class="text-[10px] font-mono text-slate-500 mt-1">Auto-backoff recovery</div>
       </div>
     </div>
 
     <!-- Pipeline Waterfall & Latency Table -->
-    <section class="bg-[#121824] border border-slate-800 rounded-xl p-6">
+    <section class="bg-[#0C1322] border border-slate-800/80 rounded-xl p-6 shadow-sm">
       <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
         <div>
-          <h2 class="text-lg font-bold text-white">Stage Latency Waterfall (Target p95 &lt; 5.0s)</h2>
-          <p class="text-xs text-slate-400">Microsecond-precision execution timings recorded per article lifecycle.</p>
+          <h2 class="text-sm font-mono font-bold uppercase tracking-wider text-white">Stage Latency Waterfall</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Microsecond execution metrics tracked across each article processing stage (Target p95 &lt; 5.0s).</p>
         </div>
-        <span class="text-xs px-2.5 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700">Auto-updating (5s)</span>
+        <span class="text-[10px] font-mono px-2 py-1 rounded bg-[#121B2C] text-slate-400 border border-slate-700">Auto-refresh (5s)</span>
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs">
-          <thead class="border-b border-slate-800 text-slate-400 uppercase font-semibold">
+        <table class="w-full text-left text-xs font-mono">
+          <thead class="border-b border-slate-800 text-slate-400 uppercase text-[10px] font-semibold">
             <tr>
-              <th class="py-2.5 px-3">Pipeline Stage</th>
-              <th class="py-2.5 px-3">Items Processed</th>
-              <th class="py-2.5 px-3">p50 Latency</th>
-              <th class="py-2.5 px-3">p95 Latency</th>
-              <th class="py-2.5 px-3">Average Latency</th>
-              <th class="py-2.5 px-3">Errors / Drops</th>
-              <th class="py-2.5 px-3">Last Active</th>
+              <th class="py-3 px-3">Pipeline Stage</th>
+              <th class="py-3 px-3">Processed</th>
+              <th class="py-3 px-3">p50 Latency</th>
+              <th class="py-3 px-3">p95 Latency</th>
+              <th class="py-3 px-3">Average Latency</th>
+              <th class="py-3 px-3">Errors / DLQ</th>
+              <th class="py-3 px-3">Last Active</th>
             </tr>
           </thead>
           <tbody id="stages-table-body" class="divide-y divide-slate-800/60 text-slate-200">
             <tr>
-              <td colspan="7" class="py-4 text-center text-slate-500">Loading stage metrics...</td>
+              <td colspan="7" class="py-6 text-center text-slate-500">Awaiting initial stage execution telemetry...</td>
             </tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- Source Health Matrix (Dot Grid) -->
-    <section class="bg-[#121824] border border-slate-800 rounded-xl p-6">
+    <!-- Source Health Matrix Grid -->
+    <section class="bg-[#0C1322] border border-slate-800/80 rounded-xl p-6 shadow-sm">
       <div class="flex items-center justify-between mb-4 border-b border-slate-800 pb-3">
         <div>
-          <h2 class="text-lg font-bold text-white">Source Ingestion Health Grid</h2>
-          <p class="text-xs text-slate-400">Real-time status of each news source and adaptive crawler state.</p>
+          <h2 class="text-sm font-mono font-bold uppercase tracking-wider text-white">Source Ingestion Health Matrix</h2>
+          <p class="text-xs text-slate-400 mt-0.5">Real-time status of each news poller, adaptive rate, and circuit state.</p>
         </div>
-        <div class="flex items-center space-x-4 text-xs">
-          <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span><span class="text-slate-400">Healthy</span></span>
-          <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span><span class="text-slate-400">Degraded</span></span>
-          <span class="flex items-center space-x-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span><span class="text-slate-400">Circuit Open</span></span>
+        <div class="flex items-center space-x-4 text-[10px] font-mono">
+          <span class="flex items-center space-x-1.5"><span class="w-2 h-2 rounded-full bg-emerald-400"></span><span class="text-slate-400">Healthy</span></span>
+          <span class="flex items-center space-x-1.5"><span class="w-2 h-2 rounded-full bg-amber-400"></span><span class="text-slate-400">Degraded</span></span>
+          <span class="flex items-center space-x-1.5"><span class="w-2 h-2 rounded-full bg-rose-400"></span><span class="text-slate-400">Circuit Open</span></span>
         </div>
       </div>
 
@@ -118,8 +172,18 @@
 
   </main>
 
-  <footer class="border-t border-[#1E293B] bg-[#0A0E17] py-4 text-center text-xs text-slate-500">
-    Kairos System Telemetry &bull; Pipeline v1.0.0
+  <!-- Footer -->
+  <footer class="border-t border-slate-800/80 bg-[#070B14] py-6 text-slate-500 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <span class="font-extrabold text-slate-400 tracking-wider">KAIROS</span>
+        <span>&bull;</span>
+        <span>Pipeline Telemetry & Diagnostics</span>
+      </div>
+      <div class="font-mono text-[11px] text-slate-500">
+        Engine Version 1.0.0
+      </div>
+    </div>
   </footer>
 
   <script>
@@ -143,7 +207,7 @@
         tbody.innerHTML = '';
         const stageNames = Object.keys(metrics.stages);
         if (stageNames.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" class="py-4 text-center text-slate-500">Collecting first execution metrics...</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" class="py-6 text-center text-slate-500 font-mono">Collecting stage execution metrics...</td></tr>`;
         } else {
           stageNames.forEach(st => {
             const data = metrics.stages[st];
@@ -165,29 +229,30 @@
         const grid = document.getElementById('sources-grid');
         grid.innerHTML = '';
         sources.forEach(src => {
-          let statusColor = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40';
+          let statusColor = 'bg-[#0C1322] border-slate-800 text-slate-300';
           let dotColor = 'bg-emerald-400';
           if (src.status === 'degraded') {
-            statusColor = 'bg-amber-500/20 text-amber-400 border-amber-500/40';
+            statusColor = 'bg-amber-950/20 border-amber-800/40 text-amber-300';
             dotColor = 'bg-amber-400';
           } else if (src.status === 'circuit_open') {
-            statusColor = 'bg-rose-500/20 text-rose-400 border-rose-500/40';
+            statusColor = 'bg-rose-950/20 border-rose-800/40 text-rose-300';
             dotColor = 'bg-rose-400';
           }
 
           const card = document.createElement('div');
-          card.className = `p-3 rounded-lg border bg-slate-900/60 ${statusColor} flex flex-col justify-between`;
+          card.className = `p-3 rounded-lg border ${statusColor} flex flex-col justify-between`;
           card.innerHTML = `
             <div>
-              <div class="flex items-center justify-between mb-1">
+              <div class="flex items-center justify-between mb-1.5">
                 <span class="w-2 h-2 rounded-full ${dotColor}"></span>
-                <span class="text-[10px] uppercase font-bold text-slate-400">T${src.tier}</span>
+                <span class="text-[9px] font-mono uppercase font-bold text-slate-500">Tier ${src.tier}</span>
               </div>
               <h4 class="font-bold text-xs text-white truncate" title="${src.name}">${src.name}</h4>
-              <span class="text-[10px] text-slate-400">${src.category}</span>
+              <span class="text-[10px] font-mono text-slate-400">${src.category}</span>
             </div>
-            <div class="mt-2 pt-2 border-t border-slate-800 text-[10px] text-slate-400">
-              Poll: ${src.poll_interval_s}s
+            <div class="mt-2.5 pt-2 border-t border-slate-800/60 text-[10px] font-mono text-slate-500 flex items-center justify-between">
+              <span>Poll</span>
+              <span>${src.poll_interval_s}s</span>
             </div>
           `;
           grid.appendChild(card);

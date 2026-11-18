@@ -4,6 +4,7 @@ from pathlib import Path
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, FileResponse, StreamingResponse
+from fastapi.staticfiles import StaticFiles
 
 from core.config import settings
 from core.db import init_db
@@ -14,7 +15,9 @@ from api.routes_system import router as system_router
 from api.sse import event_generator
 
 logger = logging.getLogger("kairos.api")
-TEMPLATES_DIR = Path(__file__).resolve().parent.parent / "web" / "templates"
+BASE_DIR = Path(__file__).resolve().parent.parent
+TEMPLATES_DIR = BASE_DIR / "web" / "templates"
+STATIC_DIR = BASE_DIR / "web" / "static"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -52,6 +55,14 @@ app = FastAPI(
 # Include API sub-routers
 app.include_router(events_router)
 app.include_router(system_router)
+
+# Mount static assets
+if STATIC_DIR.exists():
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse(STATIC_DIR / "favicon.svg", media_type="image/svg+xml")
 
 @app.api_route("/", methods=["GET", "HEAD"], response_class=HTMLResponse)
 async def live_feed_page(request: Request):

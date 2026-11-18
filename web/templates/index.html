@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KAIROS | Live Event Intelligence Engine</title>
+  <title>KAIROS &bull; Real-Time Event Intelligence Engine</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.ico">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -11,10 +12,20 @@
       theme: {
         extend: {
           colors: {
-            brand: { 50: '#f0fdf4', 500: '#22c55e', 600: '#16a34a', 700: '#15803d' },
-            darkbg: '#0B0F17',
-            darkcard: '#121824',
-            darkborder: '#1E293B'
+            surface: {
+              50: '#F8FAFC',
+              900: '#0C1322',
+              950: '#070B14'
+            },
+            accent: {
+              emerald: '#10B981',
+              cyan: '#06B6D4',
+              blue: '#3B82F6'
+            }
+          },
+          fontFamily: {
+            sans: ['-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Inter"', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
           }
         }
       }
@@ -23,98 +34,266 @@
   <style>
     @keyframes pulse-ring {
       0% { transform: scale(0.95); opacity: 1; }
-      50% { transform: scale(1.15); opacity: 0.6; }
+      50% { transform: scale(1.2); opacity: 0.4; }
       100% { transform: scale(0.95); opacity: 1; }
     }
-    .pulse-live { animation: pulse-ring 2s infinite ease-in-out; }
+    .pulse-live { animation: pulse-ring 2.4s infinite cubic-bezier(0.4, 0, 0.6, 1); }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #070B14; }
+    ::-webkit-scrollbar-thumb { background: #1E293B; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #334155; }
   </style>
 </head>
-<body class="bg-[#0B0F17] text-slate-100 min-h-screen flex flex-col font-sans antialiased">
+<body class="bg-[#070B14] text-slate-100 min-h-screen flex flex-col font-sans antialiased selection:bg-emerald-500/30 selection:text-emerald-200">
 
-  <!-- Navigation Bar -->
-  <header class="border-b border-[#1E293B] bg-[#0E1420]/90 backdrop-blur sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <div class="w-8 h-8 rounded-lg bg-emerald-500/20 border border-emerald-500 flex items-center justify-center font-bold text-emerald-400">
-          ⚡
+  <!-- Top Global Navigation Bar -->
+  <header class="border-b border-slate-800/80 bg-[#0C1322]/90 backdrop-blur-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Logo & Brand Mark -->
+      <a href="/" class="flex items-center space-x-3 group focus:outline-none focus:ring-2 focus:ring-emerald-500/40 rounded-lg p-1">
+        <!-- SVG Vector Logo -->
+        <svg class="w-8 h-8 transition-transform group-hover:scale-105" viewBox="0 0 48 48" fill="none">
+          <defs>
+            <linearGradient id="logo-g1" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#10B981" />
+              <stop offset="50%" stop-color="#06B6D4" />
+              <stop offset="100%" stop-color="#3B82F6" />
+            </linearGradient>
+            <linearGradient id="logo-g2" x1="12" y1="8" x2="36" y2="40" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#34D399" />
+              <stop offset="100%" stop-color="#0EA5E9" />
+            </linearGradient>
+          </defs>
+          <rect width="48" height="48" rx="10" fill="#0C1322" stroke="#1E293B" stroke-width="1.5" />
+          <path d="M14 11V37" stroke="url(#logo-g1)" stroke-width="4.5" stroke-linecap="round" />
+          <path d="M34 13L18 24" stroke="url(#logo-g2)" stroke-width="4" stroke-linecap="round" />
+          <path d="M21 21.5L34 35" stroke="url(#logo-g1)" stroke-width="4" stroke-linecap="round" />
+          <circle cx="21" cy="24" r="2.5" fill="#FFFFFF" />
+        </svg>
+
+        <div class="flex flex-col">
+          <div class="flex items-center space-x-2">
+            <span class="font-extrabold text-base tracking-wider text-white">KAIROS</span>
+            <span class="text-[9px] font-mono tracking-widest uppercase px-1.5 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">v1.0.0</span>
+          </div>
+          <span class="text-[10px] font-mono text-slate-400 tracking-tight hidden sm:block">LIVE EVENT INTELLIGENCE</span>
         </div>
-        <div>
-          <span class="font-extrabold text-xl tracking-tight text-white">KAIROS</span>
-          <span class="hidden sm:inline-block ml-2 px-2 py-0.5 text-xs font-medium rounded bg-emerald-950/80 border border-emerald-700/50 text-emerald-300">Live to the Second</span>
+      </a>
+
+      <!-- Center Search & Filter Input -->
+      <div class="flex-1 max-w-md hidden md:block">
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-slate-500">
+            <!-- Search SVG Icon -->
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            id="global-search"
+            placeholder="Filter storylines, entities, or topics..." 
+            class="w-full bg-[#121B2C] border border-slate-800 rounded-lg pl-9 pr-12 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/40 transition"
+          >
+          <div class="absolute inset-y-0 right-0 pr-2.5 flex items-center pointer-events-none">
+            <kbd class="text-[10px] font-mono text-slate-400 bg-slate-800/80 border border-slate-700 px-1.5 py-0.5 rounded">/</kbd>
+          </div>
         </div>
       </div>
 
-      <!-- Navigation Links -->
-      <nav class="flex items-center space-x-6 text-sm font-medium">
-        <a href="/" class="text-emerald-400 border-b-2 border-emerald-400 py-4 font-semibold">Live Feed</a>
-        <a href="/system" class="text-slate-400 hover:text-slate-200 transition">System Telemetry</a>
+      <!-- Right Navigation Actions -->
+      <nav class="flex items-center space-x-4 sm:space-x-6 text-xs font-medium">
+        <a href="/" class="text-emerald-400 border-b-2 border-emerald-400 py-5 font-semibold flex items-center space-x-1.5">
+          <!-- Feed SVG Icon -->
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
+          </svg>
+          <span>Live Feed</span>
+        </a>
+
+        <a href="/system" class="text-slate-400 hover:text-slate-200 transition py-5 flex items-center space-x-1.5">
+          <!-- Activity/Telemetry SVG Icon -->
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
+          </svg>
+          <span>Telemetry</span>
+        </a>
+
+        <!-- Live SSE Stream Status -->
         <div class="flex items-center space-x-2 pl-4 border-l border-slate-800">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 pulse-live"></span>
-          <span id="sse-status" class="text-xs text-slate-400">Connected</span>
+          <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-live"></span>
+          <span id="sse-status" class="font-mono text-[11px] text-emerald-400 font-semibold tracking-wide">LIVE</span>
         </div>
       </nav>
+
     </div>
   </header>
 
-  <!-- Main Feed Container -->
+  <!-- Live Intelligence Telemetry Bar -->
+  <section class="border-b border-slate-800/80 bg-[#0A0F1D]/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase font-mono tracking-wider text-slate-400">Active Events</div>
+            <div id="stat-active-events" class="text-sm font-mono font-bold text-white">0</div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase font-mono tracking-wider text-slate-400">Ingested Items</div>
+            <div id="stat-total-articles" class="text-sm font-mono font-bold text-white">0</div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase font-mono tracking-wider text-slate-400">Monitored Feeds</div>
+            <div id="stat-total-sources" class="text-sm font-mono font-bold text-white">19 Feeds</div>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="text-[10px] uppercase font-mono tracking-wider text-slate-400">Latency Target</div>
+            <div class="text-sm font-mono font-bold text-emerald-400">&lt; 5.0s <span class="text-[10px] font-normal text-slate-400">p95</span></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Filter Pill Bar -->
+  <section class="border-b border-slate-800/60 bg-[#070B14]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+      <div class="flex items-center space-x-2 overflow-x-auto text-xs no-scrollbar">
+        <button onclick="setFilter('all')" id="btn-filter-all" class="filter-pill px-3 py-1.5 rounded-md font-medium text-white bg-slate-800 border border-slate-700 transition">All Intelligence</button>
+        <button onclick="setFilter('World')" id="btn-filter-World" class="filter-pill px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white bg-[#0C1322] border border-slate-800/80 transition">World News</button>
+        <button onclick="setFilter('Tech')" id="btn-filter-Tech" class="filter-pill px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white bg-[#0C1322] border border-slate-800/80 transition">Technology</button>
+        <button onclick="setFilter('India')" id="btn-filter-India" class="filter-pill px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white bg-[#0C1322] border border-slate-800/80 transition">India</button>
+        <button onclick="setFilter('Science')" id="btn-filter-Science" class="filter-pill px-3 py-1.5 rounded-md font-medium text-slate-400 hover:text-white bg-[#0C1322] border border-slate-800/80 transition">Science & AI</button>
+        <button onclick="setFilter('Mentor')" id="btn-filter-Mentor" class="filter-pill px-3 py-1.5 rounded-md font-medium text-emerald-400 hover:text-emerald-300 bg-emerald-950/30 border border-emerald-800/40 transition flex items-center space-x-1.5">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
+          </svg>
+          <span>Mentor's Corner</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Feed & Inspector Container -->
   <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full grid grid-cols-1 lg:grid-cols-3 gap-8">
     
     <!-- Feed Column (2 cols) -->
-    <section class="lg:col-span-2 space-y-6">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-4">
-        <div>
-          <h1 class="text-2xl font-bold tracking-tight text-white">Clustered Live Events</h1>
-          <p class="text-xs text-slate-400 mt-1">Multi-source deduplicated storylines updated via real-time SSE stream.</p>
+    <section class="lg:col-span-2 space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+        <div class="flex items-center space-x-2">
+          <h1 class="text-sm font-mono uppercase tracking-wider text-slate-300 font-semibold">Corroborated Storylines</h1>
+          <span id="filtered-count" class="text-xs text-slate-500 font-mono"></span>
         </div>
-        <div class="text-xs text-slate-400 bg-slate-900 border border-slate-800 px-3 py-1.5 rounded-lg flex items-center space-x-2">
-          <span>Active Events:</span>
-          <span id="event-count-badge" class="font-bold text-emerald-400">0</span>
+        <div class="flex items-center space-x-2 text-[11px] font-mono text-slate-400">
+          <span>Sort:</span>
+          <span class="text-emerald-400 font-medium">Recency & Impact</span>
         </div>
       </div>
 
-      <!-- Live Stream Events Container -->
-      <div id="events-container" class="space-y-4">
-        <div id="loading-state" class="p-8 text-center text-slate-500 bg-[#121824] rounded-xl border border-slate-800">
-          <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500 mb-3"></div>
-          <p>Listening to live Redis stream...</p>
+      <!-- Events List -->
+      <div id="events-container" class="space-y-3.5">
+        <div id="loading-state" class="p-12 text-center text-slate-500 bg-[#0C1322] rounded-xl border border-slate-800/80">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-2 border-emerald-500 border-t-transparent mb-3"></div>
+          <p class="text-xs font-mono">Connecting to real-time clustering stream...</p>
         </div>
       </div>
     </section>
 
-    <!-- Sidebar: Event Timeline & System Snapshot (1 col) -->
+    <!-- Sidebar Column (1 col) -->
     <aside class="space-y-6">
       
-      <!-- Mentor's Corner Card -->
-      <div class="bg-gradient-to-br from-[#121824] to-[#161F30] border border-emerald-500/30 rounded-xl p-4 shadow-sm">
-        <div class="flex items-center justify-between mb-2">
+      <!-- Mentor's Corner Spotlight Card -->
+      <div class="bg-gradient-to-br from-[#0C1322] to-[#111A2E] border border-emerald-500/30 rounded-xl p-5 shadow-lg relative overflow-hidden">
+        <div class="absolute top-0 right-0 transform translate-x-4 -translate-y-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+        
+        <div class="flex items-center justify-between mb-3">
           <div class="flex items-center space-x-2">
-            <span class="text-sm">🌱</span>
-            <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-400">Mentor's Corner</h3>
+            <!-- Terminal / Code SVG Icon -->
+            <div class="w-6 h-6 rounded bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+              </svg>
+            </div>
+            <span class="text-[10px] font-mono uppercase tracking-widest text-emerald-400 font-bold">Mentor's Corner</span>
           </div>
-          <span class="px-1.5 py-0.5 text-[9px] font-bold rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">Priority Feed</span>
+          <span class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-300">Priority Stream</span>
         </div>
-        <p class="text-[11px] text-slate-300 leading-relaxed mb-3">
-          Engineering & systems craftsmanship reflections from <a href="https://compileartisan.dev" target="_blank" rel="noopener noreferrer" class="text-emerald-400 font-semibold hover:underline">Compile Artisan</a>.
+
+        <h3 class="text-sm font-bold text-white mb-1.5">Compile Artisan</h3>
+        <p class="text-xs text-slate-300 leading-relaxed mb-4">
+          Curated engineering reflections, compiler theory, and systems software architecture by Compile Artisan.
         </p>
-        <div class="flex items-center justify-between pt-2 border-t border-slate-800 text-[10px] text-slate-500">
-          <a href="https://compileartisan.dev" target="_blank" rel="noopener noreferrer" class="hover:text-slate-300 transition flex items-center space-x-1">
-            <span>🌐 compileartisan.dev</span>
+
+        <div class="flex items-center justify-between pt-3 border-t border-slate-800/80 text-[11px] font-mono">
+          <a href="https://compileartisan.dev" target="_blank" rel="noopener noreferrer" class="text-slate-300 hover:text-emerald-400 transition flex items-center space-x-1.5">
+            <span>Website</span>
+            <svg class="w-3 h-3 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+            </svg>
           </a>
-          <a href="https://compileartisan.dev/rss.xml" target="_blank" rel="noopener noreferrer" class="text-emerald-400/80 hover:text-emerald-300 transition flex items-center space-x-1">
-            <span>📡 RSS Feed</span>
+          <a href="https://compileartisan.dev/rss.xml" target="_blank" rel="noopener noreferrer" class="text-emerald-400 hover:text-emerald-300 transition flex items-center space-x-1.5">
+            <!-- Signal SVG -->
+            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 5c7.18 0 13 5.82 13 13M6 11a7 7 0 017 7m-6 0a1 1 0 11-2 0 1 1 0 012 0z"/>
+            </svg>
+            <span>RSS Feed</span>
           </a>
         </div>
       </div>
 
-      <!-- Selected Event Timeline Detail Card -->
-      <div class="bg-[#121824] border border-slate-800 rounded-xl p-5 sticky top-24">
+      <!-- Storyline Milestone Timeline Inspector -->
+      <div class="bg-[#0C1322] border border-slate-800/80 rounded-xl p-5 sticky top-24 shadow-sm">
         <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
-          <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-300">Storyline Timeline</h2>
-          <span id="timeline-badge" class="text-xs text-slate-500">Select an event</span>
+          <div class="flex items-center space-x-2">
+            <!-- Timeline SVG Icon -->
+            <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <h2 class="text-xs font-mono uppercase tracking-wider text-slate-300 font-bold">Storyline Inspector</h2>
+          </div>
+          <span id="timeline-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-slate-400">Select an event</span>
         </div>
 
-        <div id="timeline-container" class="space-y-3 max-h-[500px] overflow-y-auto pr-2 text-xs text-slate-400">
-          <p class="text-slate-500 italic">Click on any event on the left to inspect its chronological milestones, multi-source coverage, and first-reporter attribution.</p>
+        <div id="timeline-container" class="space-y-4 max-h-[520px] overflow-y-auto pr-1 text-xs text-slate-400">
+          <div class="p-6 text-center text-slate-500 border border-dashed border-slate-800 rounded-lg">
+            <svg class="w-8 h-8 mx-auto text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"/>
+            </svg>
+            <p class="text-xs">Click any event on the feed to examine chronological updates, corroborating sources, and reporting sequence.</p>
+          </div>
         </div>
       </div>
 
@@ -122,76 +301,171 @@
 
   </main>
 
-  <!-- Footer -->
-  <footer class="border-t border-[#1E293B] bg-[#0A0E17] py-4 text-center text-xs text-slate-500">
-    Kairos Intelligence Engine &bull; Zero-Cost Architecture &bull; Self-Hosted on Render
+  <!-- Clean Professional Footer -->
+  <footer class="border-t border-slate-800/80 bg-[#070B14] py-6 text-slate-500 text-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-3">
+        <span class="font-extrabold text-slate-400 tracking-wider">KAIROS</span>
+        <span>&bull;</span>
+        <span>High-Velocity Event Clustering Engine</span>
+      </div>
+      <div class="flex items-center space-x-4 font-mono text-[11px]">
+        <a href="https://github.com/NivedhN160/Kairos" target="_blank" rel="noopener noreferrer" class="hover:text-slate-300 transition flex items-center space-x-1">
+          <span>GitHub</span>
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+          </svg>
+        </a>
+        <span>&bull;</span>
+        <a href="/system" class="hover:text-slate-300 transition">Telemetry Console</a>
+      </div>
+    </div>
   </footer>
 
-  <!-- Live SSE Client Script -->
+  <!-- Application Logic & SSE Client -->
   <script>
     const eventsContainer = document.getElementById('events-container');
     const loadingState = document.getElementById('loading-state');
     const sseStatus = document.getElementById('sse-status');
-    const eventCountBadge = document.getElementById('event-count-badge');
+    const statActiveEvents = document.getElementById('stat-active-events');
+    const statTotalArticles = document.getElementById('stat-total-articles');
     const timelineContainer = document.getElementById('timeline-container');
     const timelineBadge = document.getElementById('timeline-badge');
+    const searchInput = document.getElementById('global-search');
+    const filteredCount = document.getElementById('filtered-count');
 
     let eventsMap = new Map();
+    let currentFilter = 'all';
+    let searchQuery = '';
 
-    // Fetch initial state
+    // Keyboard shortcut for search
+    document.addEventListener('keydown', (e) => {
+      if (e.key === '/' && document.activeElement !== searchInput) {
+        e.preventDefault();
+        searchInput.focus();
+      } else if (e.key === 'Escape' && document.activeElement === searchInput) {
+        searchInput.value = '';
+        searchQuery = '';
+        searchInput.blur();
+        renderEvents();
+      }
+    });
+
+    searchInput.addEventListener('input', (e) => {
+      searchQuery = e.target.value.toLowerCase().trim();
+      renderEvents();
+    });
+
+    function setFilter(cat) {
+      currentFilter = cat;
+      document.querySelectorAll('.filter-pill').forEach(btn => {
+        btn.classList.remove('bg-slate-800', 'text-white', 'border-slate-700');
+        btn.classList.add('bg-[#0C1322]', 'text-slate-400', 'border-slate-800/80');
+      });
+      const activeBtn = document.getElementById(`btn-filter-${cat}`);
+      if (activeBtn) {
+        activeBtn.classList.remove('bg-[#0C1322]', 'text-slate-400', 'border-slate-800/80');
+        activeBtn.classList.add('bg-slate-800', 'text-white', 'border-slate-700');
+      }
+      renderEvents();
+    }
+
     async function loadInitialEvents() {
       try {
         const res = await fetch('/api/events');
         const data = await res.json();
         if (loadingState) loadingState.remove();
 
+        eventsMap.clear();
         data.forEach(ev => eventsMap.set(ev.id, ev));
+        updateStats();
         renderEvents();
       } catch (err) {
-        console.error('Failed to load initial events:', err);
+        console.error('Failed to load events:', err);
       }
     }
 
-    function renderEvents() {
-      eventCountBadge.textContent = eventsMap.size;
-      eventsContainer.innerHTML = '';
+    function updateStats() {
+      statActiveEvents.textContent = eventsMap.size;
+      let totalArts = 0;
+      eventsMap.forEach(ev => totalArts += (ev.article_count || 1));
+      statTotalArticles.textContent = totalArts;
+    }
 
-      if (eventsMap.size === 0) {
+    function renderEvents() {
+      eventsContainer.innerHTML = '';
+      let filtered = Array.from(eventsMap.values());
+
+      // Filter by category
+      if (currentFilter === 'Mentor') {
+        filtered = filtered.filter(ev => 
+          ev.sources.some(s => s.toLowerCase().includes('compile artisan'))
+        );
+      } else if (currentFilter !== 'all') {
+        filtered = filtered.filter(ev => {
+          return (ev.title.toLowerCase().includes(currentFilter.toLowerCase()) ||
+                  ev.sources.some(s => s.toLowerCase().includes(currentFilter.toLowerCase())));
+        });
+      }
+
+      // Filter by search query
+      if (searchQuery) {
+        filtered = filtered.filter(ev => 
+          ev.title.toLowerCase().includes(searchQuery) ||
+          ev.sources.some(s => s.toLowerCase().includes(searchQuery)) ||
+          (ev.entities && ev.entities.some(e => e.toLowerCase().includes(searchQuery)))
+        );
+      }
+
+      filteredCount.textContent = `(${filtered.length} of ${eventsMap.size})`;
+
+      if (filtered.length === 0) {
         eventsContainer.innerHTML = `
-          <div class="p-8 text-center text-slate-500 bg-[#121824] rounded-xl border border-slate-800">
-            <p>Ingestion in progress. New stories will appear automatically as feeds are polled...</p>
+          <div class="p-12 text-center text-slate-500 bg-[#0C1322] rounded-xl border border-slate-800/80">
+            <svg class="w-8 h-8 mx-auto text-slate-600 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/>
+            </svg>
+            <p class="text-xs font-mono">No matching events in the active window.</p>
           </div>
         `;
         return;
       }
 
-      Array.from(eventsMap.values()).forEach(ev => {
+      filtered.forEach(ev => {
         const card = document.createElement('article');
-        card.className = "bg-[#121824] border border-slate-800 hover:border-emerald-500/50 transition-all rounded-xl p-5 cursor-pointer group shadow-sm";
+        card.className = "bg-[#0C1322] border border-slate-800/80 hover:border-emerald-500/50 transition-all rounded-xl p-5 cursor-pointer group shadow-sm hover:shadow-md";
         card.onclick = () => showEventTimeline(ev.id);
 
         const sourcePills = ev.sources.map(s => 
-          `<span class="px-2 py-0.5 text-[11px] font-medium rounded bg-slate-800 text-slate-300 border border-slate-700/60">${s}</span>`
+          `<span class="px-2 py-0.5 text-[10px] font-mono font-medium rounded bg-[#121B2C] text-slate-300 border border-slate-700/60">${s}</span>`
         ).join(' ');
 
-        const entityPills = (ev.entities || []).map(ent =>
-          `<span class="px-1.5 py-0.5 text-[10px] font-medium rounded bg-emerald-950/60 text-emerald-400 border border-emerald-800/40">#${ent}</span>`
+        const entityPills = (ev.entities || []).slice(0, 4).map(ent =>
+          `<span class="px-1.5 py-0.5 text-[9px] font-mono rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">#${ent}</span>`
         ).join(' ');
+
+        const statusClass = ev.status === 'active' 
+          ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' 
+          : 'bg-blue-500/10 text-blue-400 border-blue-500/30';
+
+        const timeStr = new Date(ev.last_seen).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
         card.innerHTML = `
           <div class="flex items-start justify-between gap-4">
-            <div>
-              <div class="flex items-center space-x-2 mb-2">
-                <span class="px-2 py-0.5 text-[10px] uppercase font-bold rounded ${
-                  ev.status === 'active' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40' : 'bg-blue-500/20 text-blue-400 border border-blue-500/40'
-                }">${ev.status}</span>
-                <span class="text-xs text-slate-500">${new Date(ev.last_seen).toLocaleTimeString()}</span>
+            <div class="space-y-2">
+              <div class="flex items-center space-x-2">
+                <span class="px-2 py-0.5 text-[9px] font-mono uppercase font-bold rounded border ${statusClass} flex items-center space-x-1">
+                  <span class="w-1.5 h-1.5 rounded-full ${ev.status === 'active' ? 'bg-emerald-400' : 'bg-blue-400'}"></span>
+                  <span>${ev.status}</span>
+                </span>
+                <span class="text-[11px] font-mono text-slate-500">${timeStr} UTC</span>
               </div>
-              <h2 class="text-base font-semibold text-slate-100 group-hover:text-emerald-400 transition leading-snug">${ev.title}</h2>
+              <h2 class="text-sm font-semibold text-slate-100 group-hover:text-emerald-400 transition leading-snug">${ev.title}</h2>
             </div>
-            <div class="text-right shrink-0">
-              <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-slate-800 text-emerald-400 border border-slate-700">
-                ${ev.article_count} ${ev.article_count === 1 ? 'article' : 'articles'}
+            
+            <div class="shrink-0 text-right">
+              <span class="text-[11px] font-mono font-bold px-2.5 py-1 rounded bg-[#121B2C] text-emerald-400 border border-slate-700">
+                ${ev.article_count} ${ev.article_count === 1 ? 'source' : 'sources'}
               </span>
             </div>
           </div>
@@ -216,50 +490,51 @@
 
         timelineBadge.textContent = `${ev.article_count} updates`;
         timelineContainer.innerHTML = `
-          <div class="mb-4">
-            <h3 class="font-bold text-slate-200 text-sm mb-1">${ev.title}</h3>
-            <p class="text-[11px] text-slate-400">Sources seen: ${ev.sources.join(', ')}</p>
+          <div class="mb-4 pb-3 border-b border-slate-800">
+            <div class="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold mb-1">Storyline Dossier</div>
+            <h3 class="font-bold text-slate-100 text-sm mb-1.5 leading-snug">${ev.title}</h3>
+            <div class="text-[10px] font-mono text-slate-400">
+              Corroborated by: <span class="text-slate-300">${ev.sources.join(', ')}</span>
+            </div>
           </div>
-          <div class="space-y-3 border-l-2 border-slate-800 pl-3">
-            ${ev.timeline.map(item => `
+
+          <div class="space-y-4 border-l-2 border-slate-800 pl-3">
+            ${ev.timeline.map((item, idx) => `
               <div class="relative">
-                <div class="absolute -left-[19px] top-1 w-2 h-2 rounded-full bg-emerald-500"></div>
-                <div class="flex items-center justify-between text-[11px] text-slate-500 mb-0.5">
-                  <span class="font-medium text-emerald-400">${item.source_name}</span>
+                <div class="absolute -left-[19px] top-1 w-2 h-2 rounded-full ${idx === 0 ? 'bg-emerald-400 ring-4 ring-emerald-500/20' : 'bg-slate-600'}"></div>
+                <div class="flex items-center justify-between text-[10px] font-mono text-slate-500 mb-1">
+                  <span class="font-bold text-emerald-400">${item.source_name}</span>
                   <span>${new Date(item.at).toLocaleTimeString()}</span>
                 </div>
-                <p class="text-xs text-slate-300">${item.headline}</p>
+                <p class="text-xs text-slate-300 leading-snug">${item.headline}</p>
               </div>
             `).join('')}
           </div>
         `;
       } catch (err) {
-        console.error('Error fetching event timeline:', err);
+        console.error('Error loading timeline:', err);
       }
     }
 
-    // Connect to Server-Sent Events (SSE)
     function setupSSE() {
       const evtSource = new EventSource('/live');
 
       evtSource.onopen = () => {
-        sseStatus.textContent = "Live Stream Active";
-        sseStatus.className = "text-xs text-emerald-400";
+        sseStatus.textContent = "CONNECTED";
+        sseStatus.className = "font-mono text-[11px] text-emerald-400 font-semibold tracking-wide";
       };
 
       evtSource.addEventListener('event.updated', (event) => {
         try {
-          const delta = JSON.parse(event.data);
-          // Refresh event list on delta
           loadInitialEvents();
         } catch (e) {
-          console.error('Error parsing SSE delta:', e);
+          console.error('Error handling SSE delta:', e);
         }
       });
 
       evtSource.onerror = () => {
-        sseStatus.textContent = "Reconnecting...";
-        sseStatus.className = "text-xs text-amber-400";
+        sseStatus.textContent = "RECONNECTING";
+        sseStatus.className = "font-mono text-[11px] text-amber-400 font-semibold tracking-wide";
       };
     }
 
